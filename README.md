@@ -37,7 +37,7 @@ Designed with best practices for **security, maintainability, and deployment on 
 ## ⚙️ Setup
 ```bash
 # Clone repo
-git clone https://github.com/<your-username>/<repo-name>.git
+git clone https://github.com/Nuel999/Blog-Platform-API.git
 cd <repo-name>
 
 # Install dependencies
@@ -55,7 +55,7 @@ npm start
 
 🌍 Deployment
 
-Backend: Render
+Backend: Render https://blog-platform-api-pmil.onrender.com
 Database: MongoDB Atlas
 
 👨‍💻 Author
