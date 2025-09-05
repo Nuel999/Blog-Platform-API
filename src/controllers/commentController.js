@@ -1,6 +1,6 @@
 import Post from "../models/Post.js";
 import Comment from "../models/Comment.js";
-import {ErrorResponse} from "../utils/errorResponse.js"
+import { ErrorResponse } from "../utils/errorResponse.js";
 
 // @desc    Create a comment on a post
 // @route   POST /api/comments/:postId
@@ -16,14 +16,14 @@ export const createComment = async (req, res) => {
       return res.status(400).json({ message: "Content is required" });
     }
 
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId); // check if post exits
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    let parentComment = null;
+    let parentComment = null; //check if parent comment exits
     if (parentCommentId) {
-      parentComment = await Comment.findById(parentCommentId);
+      parentComment = await Comment.findById(parentCommentId); //check if parent comment exits
       if (!parentComment) {
         return res.status(404).json({ message: "Parent comment not found" });
       }
@@ -33,7 +33,7 @@ export const createComment = async (req, res) => {
       post: postId,
       content,
       author: req.user.id,
-      parentComment: parentComment ? parentComment._id : null, 
+      parentComment: parentComment ? parentComment._id : null, // allow nexted level comments
     });
 
     res.status(201).json({
@@ -43,7 +43,7 @@ export const createComment = async (req, res) => {
     });
   } catch (err) {
     next(new ErrorResponse(err.message, 500));
-};
+  }
 };
 
 // @desc    Get all comments for a post
@@ -56,7 +56,7 @@ export const getCommentsByPost = async (req, res) => {
     const comments = await Comment.find({ post: postId })
       .populate("author", "username email")
       .populate("parentComment", "content")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 }); //sort by newest first
 
     res.status(200).json({
       success: true,
@@ -66,7 +66,7 @@ export const getCommentsByPost = async (req, res) => {
     });
   } catch (err) {
     next(new ErrorResponse(err.message, 500));
-};
+  }
 };
 
 // @desc    Update a comment
@@ -80,11 +80,14 @@ export const updateComment = async (req, res) => {
       return res.status(404).json({ message: "Comment not found" });
     }
 
-    if (comment.author.toString() !== req.user.id && req.user.role !== "admin") {
+    if (
+      comment.author.toString() !== req.user.id &&
+      req.user.role !== "admin"
+    ) {
       return res.status(401).json({ message: "Not authorized" });
-    }
+    } // only the author or admin can update the comment
 
-    comment.content = req.body.content || comment.content;
+    comment.content = req.body.content || comment.content; //update content if provided
     await comment.save();
 
     res.status(200).json({
@@ -108,15 +111,19 @@ export const deleteComment = async (req, res) => {
       return res.status(404).json({ message: "Comment not found" });
     }
 
-    if (comment.author.toString() !== req.user.id && req.user.role !== "admin") {
+    if (
+      comment.author.toString() !== req.user.id &&
+      req.user.role !== "admin"
+    ) {
       return res.status(401).json({ message: "Not authorized" });
-    }
+    } // only the author or admin can delete the comment
 
     await comment.deleteOne();
 
-    res.status(200).json({       success: true,
-      message: "Comment deleted successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Comment deleted successfully" });
   } catch (error) {
-        next(new ErrorResponse(err.message, 500));
+    next(new ErrorResponse(err.message, 500));
   }
 };

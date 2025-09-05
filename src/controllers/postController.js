@@ -27,7 +27,7 @@ export const createPost = async (req, res) => {
     });
   } catch (error) {
     next(new ErrorResponse(err.message, 500));
-};
+  }
 };
 // @route   GET /api/posts
 // @access  Public

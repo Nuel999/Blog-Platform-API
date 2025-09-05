@@ -1,8 +1,6 @@
-import { StatusCodes } from 'http-status-codes';
-
 export const validate = (schema) => {
   return (req, res, next) => {
-    const { error } = schema.validate(req.body); // ✅ no extra .schema
+    const { error } = schema.validate(req.body); // validate request body 
     if (error) {
       return res.status(400).json({
         success: false,

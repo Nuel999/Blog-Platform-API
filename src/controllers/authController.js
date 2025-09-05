@@ -77,7 +77,7 @@ export const login = async (req, res) => {
         username: user.username,
         email: user.email,
         role: user.role,
-      },
+      }, //Return user details except password
       token: generateToken(user._id, user.role),
     });
   } catch (err) {

@@ -37,4 +37,4 @@ export const admin = (req, res, next) => {
   } else {
     return next(new ErrorResponse("Admin access only", 403));
   }
-};
+}; //only allow admin users
